@@ -149,11 +149,20 @@ class FormidableToSlack {
 			return;
 		}
 
-		$url = sprintf( 'https://%s.slack.com/api/users.admin.invite?t=%d', $this->slack_url, ( new DateTime( 'NOW', new DateTimeZone( 'America/Los_Angeles' ) ) )->getTimestamp() );
+		$url = sprintf( 'https://%s.slack.com/api/users.admin.invite?t=%d', $this->slack_url, $this->get_timestamp() );
 
 		wp_remote_post( $url, array(
 			'blocking' => false,
 			'body' => $request_args,
 		) );
+	}
+
+	/**
+	 * Return current timestamp in America/los_angeles timezone
+	 *
+	 * @return int Current timestamp.
+	 */
+	protected function get_timestamp() {
+		return ( new DateTime( 'NOW', new DateTimeZone( 'America/Los_Angeles' ) ) )->getTimestamp();
 	}
 }
