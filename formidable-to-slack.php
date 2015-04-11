@@ -26,12 +26,53 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 $formidable_to_slack = new FormidableToSlack;
 class FormidableToSlack {
+	/**
+	 * Label text for the email field.
+	 *
+	 * Used to determine which field should be used as the email address.
+	 * Defaults to 'Email Address', and must be set as the field label manualy.
+	 *
+	 * @var string
+	 */
 	protected $email_field_label;
+
+	/**
+	 * Label text for the first name field.
+	 *
+	 * Used to determine which field should be used for first_name. Defaults
+	 * to 'First Name', and must be set as the field label manualy.
+	 *
+	 * @var string
+	 */
 	protected $first_name_field_label;
+
+	/**
+	 * Label text for the last name field.
+	 *
+	 * Used to determine which field should be used for last_name. Defaults
+	 *  to 'Last Name', and must be set as the field label manualy.
+	 *
+	 * @var string
+	 */
 	protected $last_name_field_label;
+
+	/**
+	 * API key for Slack integration.
+	 *
+	 * @var string
+	 */
 	protected $slack_key;
+
+	/**
+	 * ID of the form to send Slack invites from.
+	 *
+	 * @var int
+	 */
 	protected $slack_form;
 
+	/**
+	 * Attach actions
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'frm_style_general_settings', array( $this, 'settings_fields' ) );
@@ -39,16 +80,26 @@ class FormidableToSlack {
 		add_action( 'frm_after_create_entry', array( $this, 'send_invite' ), 10, 2 );
 	}
 
+	/**
+	 * Initialize settings
+	 *
+	 * @return void
+	 */
 	public function init () {
-		$this->email_field_label = get_option( 'fts_email_field_label', 'Email Address' );
+		$this->email_field_label      = get_option( 'fts_email_field_label', 'Email Address' );
 		$this->first_name_field_label = get_option( 'fts_first_name_field_label', 'First Name' );
-		$this->last_name_field_label = get_option( 'fts_last_name_field_label', 'Last Name' );
-		$this->slack_url = get_option( 'fts_slack_url', '' );
-		$this->slack_token = get_option( 'fts_slack_token', '' );
-		$this->slack_form = get_option( 'fts_slack_form', '' );
+		$this->last_name_field_label  = get_option( 'fts_last_name_field_label', 'Last Name' );
+		$this->slack_url              = get_option( 'fts_slack_url', '' );
+		$this->slack_token            = get_option( 'fts_slack_token', '' );
+		$this->slack_form             = get_option( 'fts_slack_form', '' );
 	}
 
-	public function settings_fields( $form_settings ) {
+	/**
+	 * Output settings fields
+	 *
+	 * @return void
+	 */
+	public function settings_fields() {
 		?>
 		<div class="clear"></div>
 		<div class="menu-settings">
@@ -82,6 +133,12 @@ class FormidableToSlack {
 		<?php
 	}
 
+	/**
+	 * Save Slack settings passed from Formidable
+	 *
+	 * @param  array $params Required. $_POST values passed through Formidable.
+	 * @return void
+	 */
 	public function save_settings( $params ) {
 		if ( isset( $params['fts_slack_url'] ) && ! empty( $params['fts_slack_url'] ) ) {
 			update_option( 'fts_slack_url', $params['fts_slack_url'] );
@@ -119,16 +176,18 @@ class FormidableToSlack {
 	 */
 	public function send_invite( $entry_id, $form_id ) {
 		global $frm_entry, $frm_entry_meta, $frm_field;
+
+		// pull form fields
 		$fields = $frm_field->getAll( array( 'form_id' => $form_id ) );
 
 		$request_args = array(
-			'email' => '',
+			'email'      => '',
 			'first_name' => '',
-			'last_name' => '',
-			'token' => $this->slack_token,
-			'channels' => '',
+			'last_name'  => '',
+			'token'      => $this->slack_token,
+			'channels'   => '',
 			'set_active' => 'true',
-			'_attempts' => 1,
+			'_attempts'  => 1,
 		);
 		// loop fields and pull out the First Name, Last Name, and Email Address fields
 		foreach ( $fields as $field ) {
@@ -151,9 +210,10 @@ class FormidableToSlack {
 
 		$url = sprintf( 'https://%s.slack.com/api/users.admin.invite?t=%d', $this->slack_url, $this->get_timestamp() );
 
+		// send off async request and move along
 		wp_remote_post( $url, array(
 			'blocking' => false,
-			'body' => $request_args,
+			'body'     => $request_args,
 		) );
 	}
 
