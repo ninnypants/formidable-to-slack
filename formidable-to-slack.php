@@ -177,6 +177,10 @@ class FormidableToSlack {
 	public function send_invite( $entry_id, $form_id ) {
 		global $frm_entry, $frm_entry_meta, $frm_field;
 
+		if ( $form_id != $this->slack_form ) {
+			return;
+		}
+
 		// pull form fields
 		$fields = $frm_field->getAll( array( 'form_id' => $form_id ) );
 
