@@ -3,7 +3,7 @@
 Plugin Name: Formidable to Slack
 Plugin URI: http://ninnypants.com/plugins/
 Description: Invite formidable form submissions to slack
-Version: 0.0.1
+Version: 1.0.0
 Author: ninnypants
 Author URI: http://ninnypants.com
 License: GPL2
