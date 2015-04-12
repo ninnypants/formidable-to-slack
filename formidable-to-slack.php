@@ -3,7 +3,7 @@
 Plugin Name: Formidable to Slack
 Plugin URI: http://ninnypants.com/plugins/
 Description: Invite formidable form submissions to slack
-Version: 1.0.0
+Version: 1.0.1
 Author: ninnypants
 Author URI: http://ninnypants.com
 License: GPL2
@@ -227,6 +227,7 @@ class FormidableToSlack {
 	 * @return int Current timestamp.
 	 */
 	protected function get_timestamp() {
-		return ( new DateTime( 'NOW', new DateTimeZone( 'America/Los_Angeles' ) ) )->getTimestamp();
+		$date = new DateTime( 'NOW', new DateTimeZone( 'America/Los_Angeles' ) );
+		return $date->getTimestamp();
 	}
 }
