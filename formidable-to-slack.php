@@ -3,7 +3,7 @@
 Plugin Name: Formidable to Slack
 Plugin URI: http://ninnypants.com/plugins/
 Description: Invite formidable form submissions to slack
-Version: 1.0.1
+Version: 1.0.2
 Author: ninnypants
 Author URI: http://ninnypants.com
 License: GPL2
@@ -141,26 +141,32 @@ class FormidableToSlack {
 	 */
 	public function save_settings( $params ) {
 		if ( isset( $params['fts_slack_url'] ) && ! empty( $params['fts_slack_url'] ) ) {
-			update_option( 'fts_slack_url', $params['fts_slack_url'] );
+			$this->slack_url = trim( sanitize_text_field( $params['fts_slack_url'] ) );
+			update_option( 'fts_slack_url', $this->slack_url );
 		}
 		if ( isset( $params['fts_slack_token'] ) && ! empty( $params['fts_slack_token'] ) ) {
-			update_option( 'fts_slack_token', $params['fts_slack_token'] );
+			$this->slack_token = trim( sanitize_text_field( $params['fts_slack_token'] ) );
+			update_option( 'fts_slack_token', $this->slack_token );
 		}
 
 		if ( isset( $params['fts_slack_form'] ) && ! empty( $params['fts_slack_form'] ) ) {
-			update_option( 'fts_slack_form', $params['fts_slack_form'] );
+			$this->slack_form = (int) $params['fts_slack_form'];
+			update_option( 'fts_slack_form', $this->slack_form );
 		}
 
 		if ( isset( $params['fts_email_field_label'] ) && ! empty( $params['fts_email_field_label'] ) ) {
-			update_option( 'fts_email_field_label', $params['fts_email_field_label'] );
+			$this->email_field_label = trim( sanitize_text_field( $params['fts_email_field_label'] ) );
+			update_option( 'fts_email_field_label', $this->email_field_label );
 		}
 
 		if ( isset( $params['fts_first_name_field_label'] ) && ! empty( $params['fts_first_name_field_label'] ) ) {
-			update_option( 'fts_first_name_field_label', $params['fts_first_name_field_label'] );
+			$this->first_name_field_label = trim( sanitize_text_field( $params['fts_first_name_field_label'] ) );
+			update_option( 'fts_first_name_field_label', $this->first_name_field_label );
 		}
 
 		if ( isset( $params['fts_last_name_field_label'] ) && ! empty( $params['fts_last_name_field_label'] ) ) {
-			update_option( 'fts_last_name_field_label', $params['fts_last_name_field_label'] );
+			$this->last_name_field_label = trim( sanitize_text_field( $params['fts_last_name_field_label'] ) );
+			update_option( 'fts_last_name_field_label', $this->last_name_field_label );
 		}
 	}
 
