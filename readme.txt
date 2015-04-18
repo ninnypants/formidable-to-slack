@@ -22,6 +22,12 @@ Automatically invite users that have filled out a specified form to your Slack t
 1. Go to [https://api.slack.com/web](https://api.slack.com/web) and generate a token for your team, and add that to your settings.
 
 == Changelog ==
+= 1.0.2 =
+* Add better validation to settings.
+* Fix bug where after initially saving settings all of the settings fields were empty until the page was reloaded again.
+
+= 1.0.1 =
+* Fixed bug where instantiation access was causing errors in versions of php older than 5.4
 
 = 1.0 =
 * Initial plugin release
