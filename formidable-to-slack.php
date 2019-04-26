@@ -173,22 +173,17 @@ class FormidableToSlack {
 	/**
 	 * Test the form to see if it should send the slack invite, and send it.
 	 *
-	 * @global FrmEntry $frm_entry
-	 * @global FrmEntryMeta $frm_entry_meta
-	 * @global FrmField $frm_field
 	 * @param  int $entry_id Required. Form entry ID.
 	 * @param  int $form_id  Required. Submitted form ID.
 	 * @return void
 	 */
 	public function send_invite( $entry_id, $form_id ) {
-		global $frm_entry, $frm_entry_meta, $frm_field;
-
 		if ( $form_id != $this->slack_form ) {
 			return;
 		}
 
-		// pull form fields
-		$fields = $frm_field->getAll( array( 'form_id' => $form_id ) );
+		// Pull form fields.
+		$fields = FrmField::get_all_for_form( $form_id );
 
 		$request_args = array(
 			'email'      => '',
@@ -199,17 +194,17 @@ class FormidableToSlack {
 			'set_active' => 'true',
 			'_attempts'  => 1,
 		);
-		// loop fields and pull out the First Name, Last Name, and Email Address fields
+		// loop fields and pull out the First Name, Last Name, and Email Address fields.
 		foreach ( $fields as $field ) {
-			// check email
+			// Check email.
 			if ( $this->email_field_label === $field->name ) {
-				$request_args['email'] = $frm_entry_meta->get_entry_meta_by_field( $entry_id, $field->id );
-			} // first name
+				$request_args['email'] = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $field->id );
+			} // First name.
 			else if ( $this->first_name_field_label === $field->name ) {
-				$request_args['first_name'] = $frm_entry_meta->get_entry_meta_by_field( $entry_id, $field->id );
-			} // last name
+				$request_args['first_name'] = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $field->id );
+			} // Last name.
 			else if ( $this->last_name_field_label === $field->name ) {
-				$request_args['last_name'] = $frm_entry_meta->get_entry_meta_by_field( $entry_id, $field->id );
+				$request_args['last_name'] = FrmEntryMeta::get_entry_meta_by_field( $entry_id, $field->id );
 			}
 		}
 
